@@ -59,11 +59,14 @@ void display(void)
 
 void init(void)
 {
+    //almost no setup until VR switch is made
     glClearColor(0.0, 0.0, 0.0, 0.0);
 }
 
 void animate(void)
 {
+    //works an idle function
+    
     if(pause == 0)
     {
         angle += 0.7;
