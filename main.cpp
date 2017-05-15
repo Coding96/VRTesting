@@ -9,6 +9,7 @@
 #include <GL/gl.h>
 #include <cstdlib>
 #include <iostream>
+#include "AssetLoader.h"
 
 //function declarations
 void init(void);
