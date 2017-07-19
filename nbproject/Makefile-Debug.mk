@@ -43,8 +43,8 @@ OBJECTFILES= \
 CFLAGS=
 
 # CC Compiler Flags
-CCFLAGS=-lX11 -lglut -lGL -lGLU -DFX -DXMESA -fomit-frame-pointer -lm
-CXXFLAGS=-lX11 -lglut -lGL -lGLU -DFX -DXMESA -fomit-frame-pointer -lm
+CCFLAGS=-m64 -lX11 -lglut -lGL -lGLU -DFX -DXMESA -fomit-frame-pointer -lm
+CXXFLAGS=-m64 -lX11 -lglut -lGL -lGLU -DFX -DXMESA -fomit-frame-pointer -lm
 
 # Fortran Compiler Flags
 FFLAGS=

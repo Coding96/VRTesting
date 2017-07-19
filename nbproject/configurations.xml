@@ -38,6 +38,7 @@
       </toolsSet>
       <compileType>
         <ccTool>
+          <architecture>2</architecture>
           <commandLine>-lX11 -lglut -lGL -lGLU -DFX -DXMESA -fomit-frame-pointer -lm</commandLine>
         </ccTool>
       </compileType>

@@ -4,12 +4,22 @@
  *
  * Created on 13 May 2017, 16:22
  */
-#include <GL/glut.h>
+///////////////////////////////////
+#include <GL/glew.h>
 #include <GL/glu.h>
-#include <GL/gl.h>
+#include <openvr.h>
+///////////////////////////////////
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_opengl.h>
+///////////////////////////////////
 #include <cstdlib>
+#include <stdio.h>
+#include <string>
+#include <vector>
 #include <iostream>
+///////////////////////////////////
 #include "AssetLoader.h"
+///////////////////////////////////
 
 //function declarations
 void init(void);
