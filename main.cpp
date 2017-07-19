@@ -6,7 +6,9 @@
  */
 ///////////////////////////////////
 #include <GL/glew.h>
+#include <GL/gl.h>
 #include <GL/glu.h>
+#include <GL/glut.h>
 #include <openvr.h>
 ///////////////////////////////////
 #include <SDL2/SDL.h>
@@ -35,8 +37,10 @@ GLfloat colour3 = 0;
 
 int pause = 0;
 
+
 int main(int argc, char** argv)
 {
+    
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE);
@@ -69,6 +73,8 @@ void display(void)
     glColor3f(colour2, colour1, colour3);
     glutSolidSphere(0.5,20,20);
 
+    
+    
     glutSwapBuffers();
 }
 
@@ -76,6 +82,8 @@ void init(void)
 {
     //almost no setup until VR switch is made
     glClearColor(0.0, 0.0, 0.0, 0.0);
+    
+    
 }
 
 void animate(void)
