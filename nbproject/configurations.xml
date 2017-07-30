@@ -39,7 +39,7 @@
       <compileType>
         <ccTool>
           <architecture>2</architecture>
-          <commandLine>-lX11 -lglut -lGL -lGLU -DFX -DXMESA -fomit-frame-pointer -lm</commandLine>
+          <commandLine>-lX11 -lglut -lGL -lGLU -DFX -DXMESA -fomit-frame-pointer -lm -lSDL2main -lSDL2</commandLine>
         </ccTool>
       </compileType>
       <item path="AssetLoader.cpp" ex="false" tool="1" flavor2="0">

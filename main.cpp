@@ -5,7 +5,6 @@
  * Created on 13 May 2017, 16:22
  */
 ///////////////////////////////////
-#include <GL/glew.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
@@ -37,6 +36,7 @@ GLfloat colour3 = 0;
 
 int pause = 0;
 
+using std::string;
 
 int main(int argc, char** argv)
 {
@@ -74,12 +74,18 @@ void display(void)
     glutSolidSphere(0.5,20,20);
 
     
-    
     glutSwapBuffers();
 }
 
 void init(void)
 {
+    if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO) != 0) 
+    {
+        SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
+        std::cout << "Unable to initialize SDL";
+        return;
+    }
+
     //almost no setup until VR switch is made
     glClearColor(0.0, 0.0, 0.0, 0.0);
     
