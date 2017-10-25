@@ -77,6 +77,8 @@ void display(void)
     glutSolidSphere(0.5,20,20);
 
     
+    
+    
     glutSwapBuffers();
 }
 
@@ -88,6 +90,14 @@ void init(void)
         std::cout << "Unable to initialize SDL";
         return;
     }
+    
+    if(vr::VR_IsRuntimeInstalled() == false)
+    {
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "VR Runtime", "VR Runtime not found", NULL);
+    }
+    
+    vr::EVRInitError eError = vr::VRInitError_None;
+    vr::VR_Init(&eError, vr::VRApplication_Scene);
 
     //almost no setup until VR switch is made
     glClearColor(0.0, 0.0, 0.0, 0.0);
