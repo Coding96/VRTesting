@@ -29,6 +29,8 @@ void keyboard(unsigned char key, int x, int y);
 void animate(void);
 void reshape(int w, int h);
 void render();
+void setupSeperateRanderTargets();
+void createFrameBuffer();
 
 vr::IVRChaperone *chaperone;
 vr::IVRRenderModels *renderModels;
@@ -197,14 +199,19 @@ void setupSeperateRanderTargets()
     //vrHMD->GetRecommendedRenderTargetSize(&m_nRenderWidth,&m_nRenderHeight);
 }
 
+void createFrameBuffer()
+{
+    
+}
+
 void render()
 {
     if(vrHMD)
     {
-        //vr::Texture_t leftEyeTexture = {(void*)(uintptr_t)leftEyeDesc.m_nResolveTextureId, vr::TextureType_OpenGL, vr::ColorSpace_Gamma };
-        //vr::VRCompositor()->Submit(vr::Eye_Left, &leftEyeTexture );
+        vr::Texture_t leftEyeTexture = {(void*)(uintptr_t)leftEyeDesc.m_nResolveTextureId, vr::TextureType_OpenGL, vr::ColorSpace_Gamma };
+        vr::VRCompositor()->Submit(vr::Eye_Left, &leftEyeTexture );
 
-        //vr::Texture_t rightEyeTexture = {(void*)(uintptr_t)rightEyeDesc.m_nResolveTextureId, vr::TextureType_OpenGL, vr::ColorSpace_Gamma };
-        //vr::VRCompositor()->Submit(vr::Eye_Right, &rightEyeTexture );
+        vr::Texture_t rightEyeTexture = {(void*)(uintptr_t)rightEyeDesc.m_nResolveTextureId, vr::TextureType_OpenGL, vr::ColorSpace_Gamma };
+        vr::VRCompositor()->Submit(vr::Eye_Right, &rightEyeTexture );
     }
 }
