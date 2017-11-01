@@ -40,6 +40,9 @@ struct FramebufferDesc
 };
 FramebufferDesc leftEyeDesc;
 FramebufferDesc rightEyeDesc;
+
+uint32_t RenderWidth;
+uint32_t RenderHeight;
 //
 
 //function declarations
@@ -49,7 +52,7 @@ void keyboard(unsigned char key, int x, int y);
 void animate(void);
 void reshape(int w, int h);
 void render();
-void setupSeperateRanderTargets();
+void setupSeperateRenderTargets();
 void createFrameBuffer(int nWidth, int nHeight,FramebufferDesc &framebufferDesc);
 //
 
@@ -198,9 +201,9 @@ void reshape(int w, int h)
     glMatrixMode(GL_MODELVIEW);
 }
 
-void setupSeperateRanderTargets()
+void setupSeperateRenderTargets()
 {
-    //vrHMD->GetRecommendedRenderTargetSize(&m_nRenderWidth,&m_nRenderHeight);
+    vrHMD->GetRecommendedRenderTargetSize(&RenderWidth,&RenderHeight);
 }
 
 void createFrameBuffer(int nWidth, int nHeight,FramebufferDesc &framebufferDesc)
