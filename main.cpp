@@ -28,6 +28,24 @@ void display(void);
 void keyboard(unsigned char key, int x, int y);
 void animate(void);
 void reshape(int w, int h);
+void render();
+
+vr::IVRChaperone *chaperone;
+vr::IVRRenderModels *renderModels;
+vr::IVRSystem *vrHMD;
+vr::TrackedDevicePose_t vrTrackedDevicePose[vr::k_unMaxTrackedDeviceCount];
+
+
+struct FramebufferDesc
+{
+	GLuint m_nDepthBufferId;
+	GLuint m_nRenderTextureId;
+	GLuint m_nRenderFramebufferId;
+	GLuint m_nResolveTextureId;
+	GLuint m_nResolveFramebufferId;
+};
+FramebufferDesc leftEyeDesc;
+FramebufferDesc rightEyeDesc;
 
 GLfloat angle = 0;
 GLfloat colour1 = 1;
@@ -75,9 +93,9 @@ void display(void)
 
     glColor3f(colour2, colour1, colour3);
     glutSolidSphere(0.5,20,20);
-
     
-    
+    render();
+                
     
     glutSwapBuffers();
 }
@@ -97,8 +115,13 @@ void init(void)
     }
     
     vr::EVRInitError eError = vr::VRInitError_None;
-    vr::VR_Init(&eError, vr::VRApplication_Scene);
-
+    vrHMD = vr::VR_Init(&eError, vr::VRApplication_Scene);
+    
+    //variable holds chaperone data from driver
+    chaperone = vr::VRChaperone();
+    //variable holds render models from driver
+    renderModels = (vr::IVRRenderModels *)vr::VR_GetGenericInterface(vr::IVRRenderModels_Version, &eError);
+    
     //almost no setup until VR switch is made
     glClearColor(0.0, 0.0, 0.0, 0.0);
     
@@ -148,6 +171,7 @@ void keyboard(unsigned char key, int x, int y)
     switch (key)
     {
     case 27: /* Escape key */
+        vr::VR_Shutdown();
         exit(0);
     case 112:
         pause = !pause;
@@ -166,4 +190,21 @@ void reshape(int w, int h)
     glLoadIdentity();
     gluPerspective(60, (GLfloat) w / (GLfloat) h, 1.0, 100.0);
     glMatrixMode(GL_MODELVIEW);
+}
+
+void setupSeperateRanderTargets()
+{
+    //vrHMD->GetRecommendedRenderTargetSize(&m_nRenderWidth,&m_nRenderHeight);
+}
+
+void render()
+{
+    if(vrHMD)
+    {
+        //vr::Texture_t leftEyeTexture = {(void*)(uintptr_t)leftEyeDesc.m_nResolveTextureId, vr::TextureType_OpenGL, vr::ColorSpace_Gamma };
+        //vr::VRCompositor()->Submit(vr::Eye_Left, &leftEyeTexture );
+
+        //vr::Texture_t rightEyeTexture = {(void*)(uintptr_t)rightEyeDesc.m_nResolveTextureId, vr::TextureType_OpenGL, vr::ColorSpace_Gamma };
+        //vr::VRCompositor()->Submit(vr::Eye_Right, &rightEyeTexture );
+    }
 }
