@@ -43,8 +43,8 @@ OBJECTFILES= \
 CFLAGS=
 
 # CC Compiler Flags
-CCFLAGS=-m64 -lX11 -lglut -lGL -lGLU -DFX -DXMESA -fomit-frame-pointer -lm -lSDL2main -lSDL2 -lopenvr_api
-CXXFLAGS=-m64 -lX11 -lglut -lGL -lGLU -DFX -DXMESA -fomit-frame-pointer -lm -lSDL2main -lSDL2 -lopenvr_api
+CCFLAGS=-m64 -lX11 -lGLEW -lglut -lGL -lGLU -DFX -DXMESA -fomit-frame-pointer -lm -lSDL2main -lSDL2 -lopenvr_api
+CXXFLAGS=-m64 -lX11 -lGLEW -lglut -lGL -lGLU -DFX -DXMESA -fomit-frame-pointer -lm -lSDL2main -lSDL2 -lopenvr_api
 
 # Fortran Compiler Flags
 FFLAGS=

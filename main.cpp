@@ -5,6 +5,7 @@
  * Created on 13 May 2017, 16:22
  */
 ///////////////////////////////////
+#include <GL/glew.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
@@ -204,7 +205,31 @@ void setupSeperateRanderTargets()
 
 void createFrameBuffer(int nWidth, int nHeight,FramebufferDesc &framebufferDesc)
 {
-    
+    //credit value inc for glew framebuffer technique
+        glGenFramebuffers(1, &framebufferDesc.m_nRenderFramebufferId);
+	glBindFramebuffer(GL_FRAMEBUFFER, framebufferDesc.m_nRenderFramebufferId);
+
+	glGenRenderbuffers(1, &framebufferDesc.m_nDepthBufferId);
+	glBindRenderbuffer(GL_RENDERBUFFER, framebufferDesc.m_nDepthBufferId);
+	glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH_COMPONENT, nWidth, nHeight);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, framebufferDesc.m_nDepthBufferId);
+
+	glGenTextures(1, &framebufferDesc.m_nRenderTextureId);
+	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, framebufferDesc.m_nRenderTextureId);
+	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGBA8, nWidth, nHeight, true);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, framebufferDesc.m_nRenderTextureId, 0);
+
+	glGenFramebuffers(1, &framebufferDesc.m_nResolveFramebufferId);
+	glBindFramebuffer(GL_FRAMEBUFFER, framebufferDesc.m_nResolveFramebufferId);
+
+	glGenTextures(1, &framebufferDesc.m_nResolveTextureId);
+	glBindTexture(GL_TEXTURE_2D, framebufferDesc.m_nResolveTextureId);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, nWidth, nHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebufferDesc.m_nResolveTextureId, 0);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void render()
