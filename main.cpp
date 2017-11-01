@@ -22,16 +22,7 @@
 #include "AssetLoader.h"
 ///////////////////////////////////
 
-//function declarations
-void init(void);
-void display(void);
-void keyboard(unsigned char key, int x, int y);
-void animate(void);
-void reshape(int w, int h);
-void render();
-void setupSeperateRanderTargets();
-void createFrameBuffer();
-
+//global variables
 vr::IVRChaperone *chaperone;
 vr::IVRRenderModels *renderModels;
 vr::IVRSystem *vrHMD;
@@ -48,6 +39,18 @@ struct FramebufferDesc
 };
 FramebufferDesc leftEyeDesc;
 FramebufferDesc rightEyeDesc;
+//
+
+//function declarations
+void init(void);
+void display(void);
+void keyboard(unsigned char key, int x, int y);
+void animate(void);
+void reshape(int w, int h);
+void render();
+void setupSeperateRanderTargets();
+void createFrameBuffer(int nWidth, int nHeight,FramebufferDesc &framebufferDesc);
+//
 
 GLfloat angle = 0;
 GLfloat colour1 = 1;
@@ -199,7 +202,7 @@ void setupSeperateRanderTargets()
     //vrHMD->GetRecommendedRenderTargetSize(&m_nRenderWidth,&m_nRenderHeight);
 }
 
-void createFrameBuffer()
+void createFrameBuffer(int nWidth, int nHeight,FramebufferDesc &framebufferDesc)
 {
     
 }
