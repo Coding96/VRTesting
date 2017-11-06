@@ -5,6 +5,8 @@
                    displayName="Header Files"
                    projectFiles="true">
       <itemPath>AssetLoader.h</itemPath>
+      <itemPath>Matrices.h</itemPath>
+      <itemPath>Vectors.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -14,6 +16,7 @@
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>AssetLoader.cpp</itemPath>
+      <itemPath>Matrices.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
@@ -46,6 +49,12 @@
       </item>
       <item path="AssetLoader.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Matrices.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Matrices.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Vectors.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
@@ -73,6 +82,12 @@
       <item path="AssetLoader.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="AssetLoader.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Matrices.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Matrices.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Vectors.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>

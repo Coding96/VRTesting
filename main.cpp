@@ -21,6 +21,7 @@
 #include <iostream>
 ///////////////////////////////////
 #include "AssetLoader.h"
+#include "Matrices.h"
 ///////////////////////////////////
 
 //global variables
@@ -41,6 +42,11 @@ struct FramebufferDesc
 FramebufferDesc leftEyeDesc;
 FramebufferDesc rightEyeDesc;
 
+Matrix4 m_mat4ProjectionLeft;
+Matrix4 m_mat4ProjectionRight;
+Matrix4 m_mat4eyePosLeft;
+Matrix4 m_mat4eyePosRight;
+
 uint32_t RenderWidth;
 uint32_t RenderHeight;
 //
@@ -54,6 +60,11 @@ void reshape(int w, int h);
 void render();
 void setupSeperateRenderTargets();
 void createFrameBuffer(int nWidth, int nHeight,FramebufferDesc &framebufferDesc);
+void RenderSteroTargets();
+void RenderSceneByEye(vr::Hmd_Eye eye);
+void SetupCameras();
+Matrix4 GetHMDMatrixProjectionEye(vr::Hmd_Eye nEye);
+Matrix4 GetHMDMatrixPoseEye( vr::Hmd_Eye nEye );
 //
 
 GLfloat angle = 0;
@@ -111,6 +122,11 @@ void display(void)
 
 void init(void)
 {
+    //almost no setup until VR switch is made
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+    
+    
+    
     if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO) != 0) 
     {
         SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
@@ -123,6 +139,9 @@ void init(void)
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "VR Runtime", "VR Runtime not found", NULL);
     }
     
+    glewExperimental = GL_TRUE;
+    GLenum nGlewError = glewInit();
+    
     vr::EVRInitError eError = vr::VRInitError_None;
     vrHMD = vr::VR_Init(&eError, vr::VRApplication_Scene);
     
@@ -131,8 +150,12 @@ void init(void)
     //variable holds render models from driver
     renderModels = (vr::IVRRenderModels *)vr::VR_GetGenericInterface(vr::IVRRenderModels_Version, &eError);
     
-    //almost no setup until VR switch is made
-    glClearColor(0.0, 0.0, 0.0, 0.0);
+    //TODO**************************************************
+    //setupScene();
+    //setupCameras();
+    
+    setupSeperateRenderTargets();
+    
     
     
 }
@@ -204,6 +227,9 @@ void reshape(int w, int h)
 void setupSeperateRenderTargets()
 {
     vrHMD->GetRecommendedRenderTargetSize(&RenderWidth,&RenderHeight);
+    
+    createFrameBuffer(RenderWidth,RenderHeight,leftEyeDesc);
+    createFrameBuffer(RenderWidth,RenderHeight,rightEyeDesc);
 }
 
 void createFrameBuffer(int nWidth, int nHeight,FramebufferDesc &framebufferDesc)
@@ -235,10 +261,97 @@ void createFrameBuffer(int nWidth, int nHeight,FramebufferDesc &framebufferDesc)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void RenderSteroTargets()
+{
+        glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
+	glEnable( GL_MULTISAMPLE );
+
+	// Left Eye
+	glBindFramebuffer( GL_FRAMEBUFFER, leftEyeDesc.m_nRenderFramebufferId );
+ 	glViewport(0, 0, RenderWidth, RenderHeight );
+ 	RenderSceneByEye( vr::Eye_Left );
+ 	glBindFramebuffer( GL_FRAMEBUFFER, 0 );
+	
+	glDisable( GL_MULTISAMPLE );
+	 	
+ 	glBindFramebuffer(GL_READ_FRAMEBUFFER, leftEyeDesc.m_nRenderFramebufferId);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, leftEyeDesc.m_nResolveFramebufferId );
+
+        glBlitFramebuffer( 0, 0, RenderWidth, RenderHeight, 0, 0, RenderWidth, RenderHeight, 
+		GL_COLOR_BUFFER_BIT,
+ 		GL_LINEAR );
+
+ 	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0 );	
+
+	glEnable( GL_MULTISAMPLE );
+
+	// Right Eye
+	glBindFramebuffer( GL_FRAMEBUFFER, rightEyeDesc.m_nRenderFramebufferId );
+ 	glViewport(0, 0, RenderWidth, RenderHeight );
+ 	RenderSceneByEye( vr::Eye_Right );
+ 	glBindFramebuffer( GL_FRAMEBUFFER, 0 );
+ 	
+	glDisable( GL_MULTISAMPLE );
+
+ 	glBindFramebuffer(GL_READ_FRAMEBUFFER, rightEyeDesc.m_nRenderFramebufferId );
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, rightEyeDesc.m_nResolveFramebufferId );
+	
+        glBlitFramebuffer( 0, 0, RenderWidth, RenderHeight, 0, 0, RenderWidth, RenderHeight, 
+		GL_COLOR_BUFFER_BIT,
+ 		GL_LINEAR  );
+
+ 	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0 );
+}
+
+void RenderSceneByEye(vr::Hmd_Eye eye)
+{
+    
+}
+
+void SetupCameras()
+{
+        m_mat4ProjectionLeft = GetHMDMatrixProjectionEye( vr::Eye_Left );
+	m_mat4ProjectionRight = GetHMDMatrixProjectionEye( vr::Eye_Right );
+	m_mat4eyePosLeft = GetHMDMatrixPoseEye( vr::Eye_Left );
+	m_mat4eyePosRight = GetHMDMatrixPoseEye( vr::Eye_Right );
+}
+
+Matrix4 GetHMDMatrixProjectionEye( vr::Hmd_Eye nEye )
+{
+
+	vr::HmdMatrix44_t mat = vrHMD->GetProjectionMatrix(nEye, 0.1f, 300.0f);
+
+	return Matrix4(
+		mat.m[0][0], mat.m[1][0], mat.m[2][0], mat.m[3][0],
+		mat.m[0][1], mat.m[1][1], mat.m[2][1], mat.m[3][1],
+		mat.m[0][2], mat.m[1][2], mat.m[2][2], mat.m[3][2],
+		mat.m[0][3], mat.m[1][3], mat.m[2][3], mat.m[3][3]
+		);
+}
+	
+Matrix4 GetHMDMatrixPoseEye( vr::Hmd_Eye nEye )
+{
+
+
+	vr::HmdMatrix34_t matEyeRight = vrHMD->GetEyeToHeadTransform(nEye);
+	Matrix4 matrixObj(
+		matEyeRight.m[0][0], matEyeRight.m[1][0], matEyeRight.m[2][0], 0.0,
+		matEyeRight.m[0][1], matEyeRight.m[1][1], matEyeRight.m[2][1], 0.0,
+		matEyeRight.m[0][2], matEyeRight.m[1][2], matEyeRight.m[2][2], 0.0,
+		matEyeRight.m[0][3], matEyeRight.m[1][3], matEyeRight.m[2][3], 1.0f
+		);
+
+	return matrixObj.invert();
+}
+
 void render()
 {
     if(vrHMD)
     {
+        RenderSteroTargets();
+        
         vr::Texture_t leftEyeTexture = {(void*)(uintptr_t)leftEyeDesc.m_nResolveTextureId, vr::TextureType_OpenGL, vr::ColorSpace_Gamma };
         vr::VRCompositor()->Submit(vr::Eye_Left, &leftEyeTexture );
 
