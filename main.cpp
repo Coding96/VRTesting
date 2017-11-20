@@ -22,6 +22,8 @@
 ///////////////////////////////////
 #include "AssetLoader.h"
 #include "Matrices.h"
+#include "lodepng.h"
+#include "pathtools.h"
 ///////////////////////////////////
 
 //global variables
@@ -49,6 +51,7 @@ Matrix4 m_mat4eyePosRight;
 
 uint32_t RenderWidth;
 uint32_t RenderHeight;
+GLuint m_iTexture;
 //
 
 //function declarations
@@ -65,6 +68,7 @@ void RenderSceneByEye(vr::Hmd_Eye eye);
 void SetupCameras();
 Matrix4 GetHMDMatrixProjectionEye(vr::Hmd_Eye nEye);
 Matrix4 GetHMDMatrixPoseEye( vr::Hmd_Eye nEye );
+bool setupOpenGLTextures();
 //
 
 GLfloat angle = 0;
@@ -152,10 +156,10 @@ void init(void)
     
     //TODO**************************************************
     //setupScene();
-    //setupCameras();
     
+    SetupCameras();
     setupSeperateRenderTargets();
-    
+    setupOpenGLTextures();
     
     
 }
@@ -230,6 +234,40 @@ void setupSeperateRenderTargets()
     
     createFrameBuffer(RenderWidth,RenderHeight,leftEyeDesc);
     createFrameBuffer(RenderWidth,RenderHeight,rightEyeDesc);
+}
+
+bool setupOpenGLTextures()
+{
+        std::string sExecutableDirectory = Path_StripFilename(Path_GetExecutablePath());
+	std::string strFullPath = Path_MakeAbsolute("../cube_texture.png", sExecutableDirectory);
+
+	std::vector<unsigned char> imageRGBA;
+	unsigned nImageWidth, nImageHeight;
+	unsigned nError = lodepng::decode(imageRGBA, nImageWidth, nImageHeight, strFullPath.c_str());
+
+	if (nError != 0)
+		return false;
+
+	glGenTextures(1, &m_iTexture);
+	glBindTexture(GL_TEXTURE_2D, m_iTexture);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, nImageWidth, nImageHeight,
+		0, GL_RGBA, GL_UNSIGNED_BYTE, &imageRGBA[0]);
+
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+	GLfloat fLargest;
+	glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &fLargest);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, fLargest);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	return (m_iTexture != 0);
 }
 
 void createFrameBuffer(int nWidth, int nHeight,FramebufferDesc &framebufferDesc)
@@ -307,7 +345,7 @@ void RenderSteroTargets()
 
 void RenderSceneByEye(vr::Hmd_Eye eye)
 {
-    
+
 }
 
 void SetupCameras()
@@ -348,8 +386,7 @@ Matrix4 GetHMDMatrixPoseEye( vr::Hmd_Eye nEye )
 
 void render()
 {
-    if(vrHMD)
-    {
+
         RenderSteroTargets();
         
         vr::Texture_t leftEyeTexture = {(void*)(uintptr_t)leftEyeDesc.m_nResolveTextureId, vr::TextureType_OpenGL, vr::ColorSpace_Gamma };
@@ -357,5 +394,5 @@ void render()
 
         vr::Texture_t rightEyeTexture = {(void*)(uintptr_t)rightEyeDesc.m_nResolveTextureId, vr::TextureType_OpenGL, vr::ColorSpace_Gamma };
         vr::VRCompositor()->Submit(vr::Eye_Right, &rightEyeTexture );
-    }
+    
 }

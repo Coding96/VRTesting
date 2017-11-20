@@ -7,6 +7,8 @@
       <itemPath>AssetLoader.h</itemPath>
       <itemPath>Matrices.h</itemPath>
       <itemPath>Vectors.h</itemPath>
+      <itemPath>lodepng.h</itemPath>
+      <itemPath>pathtools.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -17,7 +19,9 @@
                    projectFiles="true">
       <itemPath>AssetLoader.cpp</itemPath>
       <itemPath>Matrices.cpp</itemPath>
+      <itemPath>lodepng.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
+      <itemPath>pathtools.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
@@ -42,7 +46,8 @@
       <compileType>
         <ccTool>
           <architecture>2</architecture>
-          <commandLine>-lX11 -lGLEW -lglut -lGL -lGLU -DFX -DXMESA -fomit-frame-pointer -lm -lSDL2main -lSDL2 -lopenvr_api</commandLine>
+          <standard>11</standard>
+          <commandLine>-ldl -lX11 -lGLEW -lglut -lGL -lGLU -DFX -DXMESA -fomit-frame-pointer -lm -lSDL2main -lSDL2 -lopenvr_api</commandLine>
         </ccTool>
       </compileType>
       <item path="AssetLoader.cpp" ex="false" tool="1" flavor2="0">
@@ -55,7 +60,15 @@
       </item>
       <item path="Vectors.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="lodepng.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="lodepng.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="pathtools.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="pathtools.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
     <conf name="Release" type="1">
@@ -89,7 +102,15 @@
       </item>
       <item path="Vectors.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="lodepng.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="lodepng.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="pathtools.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="pathtools.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
   </confs>

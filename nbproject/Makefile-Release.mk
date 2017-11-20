@@ -37,7 +37,9 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/AssetLoader.o \
 	${OBJECTDIR}/Matrices.o \
-	${OBJECTDIR}/main.o
+	${OBJECTDIR}/lodepng.o \
+	${OBJECTDIR}/main.o \
+	${OBJECTDIR}/pathtools.o
 
 
 # C Compiler Flags
@@ -74,10 +76,20 @@ ${OBJECTDIR}/Matrices.o: Matrices.cpp
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Matrices.o Matrices.cpp
 
+${OBJECTDIR}/lodepng.o: lodepng.cpp
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lodepng.o lodepng.cpp
+
 ${OBJECTDIR}/main.o: main.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.cpp
+
+${OBJECTDIR}/pathtools.o: pathtools.cpp
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/pathtools.o pathtools.cpp
 
 # Subprojects
 .build-subprojects:
