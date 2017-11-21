@@ -4,6 +4,9 @@
  *
  * Created on 13 May 2017, 16:22
  */
+
+#define POSIX 1
+#define LINUX 1
 ///////////////////////////////////
 #include <GL/glew.h>
 #include <GL/gl.h>
@@ -55,10 +58,10 @@ GLuint m_iTexture;
 //
 
 //function declarations
-void init(void);
-void display(void);
-void keyboard(unsigned char key, int x, int y);
-void animate(void);
+void Binit(void);
+//void display(void);
+//void keyboard(unsigned char key, int x, int y);
+//void animate(void);
 void reshape(int w, int h);
 void render();
 void setupSeperateRenderTargets();
@@ -84,18 +87,23 @@ int main(int argc, char** argv)
 {
     
 
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE);
-    glutInitWindowSize(500, 500);
-    glutInitWindowPosition(100, 100);
+    //glutInit(&argc, argv);
+    //glutInitDisplayMode(GLUT_DOUBLE);
+    //glutInitWindowSize(500, 500);
+    //glutInitWindowPosition(100, 100);
 
-    glutCreateWindow("VR Testing");
-    init();
-    glutDisplayFunc(display);
-    glutReshapeFunc(reshape);
-    glutKeyboardFunc(keyboard);
-    glutIdleFunc(animate);
-    glutMainLoop();
+    //glutCreateWindow("VR Testing");
+    Binit();
+    //glutDisplayFunc(display);
+    //glutReshapeFunc(reshape);
+    //glutKeyboardFunc(keyboard);
+    //glutIdleFunc(animate);
+    //glutMainLoop();
+    
+    while(vrHMD != 0)
+    {
+        render();
+    }
 
     
     
@@ -108,7 +116,9 @@ void display(void)
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
-    gluLookAt(0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    gluLookAt(0.0, 0.0, 5.0,
+                0.0, 0.0, 0.0,
+                    0.0, 1.0, 0.0);
     glRotatef(angle, 1, 0, 0);
     glRotatef(angle, 0, 1, 0);
     glRotatef(angle, 0, 0, 1);
@@ -124,7 +134,7 @@ void display(void)
     glutSwapBuffers();
 }
 
-void init(void)
+void Binit(void)
 {
     //almost no setup until VR switch is made
     glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -147,13 +157,17 @@ void init(void)
     GLenum nGlewError = glewInit();
     
     vr::EVRInitError eError = vr::VRInitError_None;
-    vrHMD = vr::VR_Init(&eError, vr::VRApplication_Scene);
+    
     
     //variable holds chaperone data from driver
     chaperone = vr::VRChaperone();
+
     //variable holds render models from driver
     renderModels = (vr::IVRRenderModels *)vr::VR_GetGenericInterface(vr::IVRRenderModels_Version, &eError);
     
+    vrHMD = vr::VR_Init(&eError, vr::VRApplication_Scene);
+    //vrHMD->SetDisplayVisibility(true);
+    //chaperone->ForceBoundsVisible(true);
     //TODO**************************************************
     //setupScene();
     
@@ -161,10 +175,10 @@ void init(void)
     setupSeperateRenderTargets();
     setupOpenGLTextures();
     
-    
+
 }
 
-void animate(void)
+/*void animate(void)
 {
     //works an idle function
 
@@ -198,7 +212,7 @@ void animate(void)
         }
     }
     glutPostRedisplay();
-}
+}*/
 
 void keyboard(unsigned char key, int x, int y)
 {
@@ -345,7 +359,13 @@ void RenderSteroTargets()
 
 void RenderSceneByEye(vr::Hmd_Eye eye)
 {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
 
+    
+    //needs a call to update HMDmatrix using waitgetposes
+	//Draw Scene
+    
 }
 
 void SetupCameras()
@@ -386,6 +406,7 @@ Matrix4 GetHMDMatrixPoseEye( vr::Hmd_Eye nEye )
 
 void render()
 {
+        vr::VRCompositor()->ClearLastSubmittedFrame();
 
         RenderSteroTargets();
         
